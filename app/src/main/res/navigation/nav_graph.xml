@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/DeviceList">
+
+    <fragment
+        android:id="@+id/DeviceList"
+        android:name="com.plume.simplified.devicelist.DeviceListFragment"
+        android:label="@string/device_list_label"
+        tools:layout="@layout/fragment_device_list">
+
+        <action
+            android:id="@+id/action_DeviceListFragment_to_DeviceDetailsFragment"
+            app:destination="@id/DeviceDetailsFragment" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/DeviceDetailsFragment"
+        android:name="com.plume.simplified.devicedetails.DeviceDetailsFragment"
+        android:label="@string/device_details_label"
+        tools:layout="@layout/fragment_device_details">
+
+        <argument
+            android:name="macAddress"
+            app:argType="string" />
+
+    </fragment>
+</navigation>

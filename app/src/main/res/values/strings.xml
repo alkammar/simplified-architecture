@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">simplified</string>
+    <string name="action_settings">Settings</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="device_list_label">Devices</string>
+
+    <string name="device_details_label">Device</string>
+    <string name="device_details_no_device_message">Device does not exist</string>
+    <string name="device_details_not_connected_message">Not connected</string>
+</resources>
