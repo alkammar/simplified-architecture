@@ -8,6 +8,9 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.plume.domain.devicelist.DeviceList
+import com.plume.domain.devicelist.DeviceList.HasDevices
+import com.plume.domain.devicelist.DeviceList.NoDevices
+import com.plume.domain.devicelist.DeviceList.Unknown
 import com.plume.simplified.R
 import com.plume.simplified.infra.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
@@ -34,16 +37,16 @@ class DeviceListFragment : BaseFragment<Unit, DeviceList>() {
 
     override fun onStateUpdated(state: DeviceList) {
         when (state) {
-            DeviceList.Unknown -> {
+            Unknown -> {
                 empty.isVisible = false
             }
 
-            DeviceList.NoDevices -> {
+            NoDevices -> {
                 empty.isVisible = true
                 deviceAdapter.data = emptyList()
             }
 
-            is DeviceList.HasDevices -> {
+            is HasDevices -> {
                 empty.isVisible = false
                 deviceAdapter.data = state.devices
             }

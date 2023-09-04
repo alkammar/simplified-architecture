@@ -8,6 +8,10 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import com.plume.domain.devicedetails.DeviceDetails
+import com.plume.domain.devicedetails.DeviceDetails.Connected
+import com.plume.domain.devicedetails.DeviceDetails.NoDevice
+import com.plume.domain.devicedetails.DeviceDetails.NotConnected
+import com.plume.domain.devicedetails.DeviceDetails.Unknown
 import com.plume.simplified.R
 import com.plume.simplified.infra.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
@@ -36,27 +40,27 @@ class DeviceDetailsFragment : BaseFragment<String, DeviceDetails>() {
 
     override fun onStateUpdated(state: DeviceDetails) {
         when (state) {
-            DeviceDetails.Unknown -> {
+            Unknown -> {
                 deviceLabel.text = "--"
                 deviceNodeConnection.isVisible = false
                 removeDeviceButton.isEnabled = false
             }
 
-            DeviceDetails.NoDevice -> {
+            NoDevice -> {
                 deviceLabel.text = getString(R.string.device_details_no_device_message)
                 nodeLabel.text = ""
                 deviceNodeConnection.isVisible = false
                 removeDeviceButton.isEnabled = false
             }
 
-            is DeviceDetails.NoNode -> {
+            is NotConnected -> {
                 deviceLabel.text = state.device.name
                 nodeLabel.text = getString(R.string.device_details_not_connected_message)
                 deviceNodeConnection.isVisible = false
                 requireSupportActivity().supportActionBar?.title = state.device.name
             }
 
-            is DeviceDetails.HasDevice -> {
+            is Connected -> {
                 deviceLabel.text = state.device.name
                 nodeLabel.text = state.node.name
                 deviceNodeConnection.isVisible = true

@@ -9,11 +9,11 @@ sealed class DeviceDetails {
 
     object NoDevice: DeviceDetails()
 
-    data class NoNode(
+    data class NotConnected(
         val device: Device
     ): DeviceDetails()
 
-    data class HasDevice(
+    data class Connected(
         val device: Device,
         val node: Node
     ): DeviceDetails()

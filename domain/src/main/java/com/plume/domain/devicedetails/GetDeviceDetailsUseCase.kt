@@ -22,9 +22,9 @@ class GetDeviceDetailsUseCase(
         } else {
             val node = nodes.firstOrNull { node -> node.id == device.nodeId }
             if (node == null) {
-                DeviceDetails.NoNode(device)
+                DeviceDetails.NotConnected(device)
             } else {
-                DeviceDetails.HasDevice(device, node)
+                DeviceDetails.Connected(device, node)
             }
         }
     }
