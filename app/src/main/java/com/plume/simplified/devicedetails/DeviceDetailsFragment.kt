@@ -30,10 +30,10 @@ class DeviceDetailsFragment : BaseFragment<String, DeviceDetails>() {
 
     private val args: DeviceDetailsFragmentArgs by navArgs()
 
+    override fun stateConfiguration() = args.macAddress
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        viewModel.onStart(args.macAddress)
 
         removeDeviceButton.setOnClickListener { viewModel.onRemoveDeviceAction(args.macAddress) }
     }

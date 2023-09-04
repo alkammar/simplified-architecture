@@ -3,10 +3,11 @@ package com.plume.data
 import com.plume.data.infra.DataRepository
 import com.plume.entity.Device
 import com.plume.repository.DeviceRepository
+import kotlinx.coroutines.CoroutineScope
 
-class DeviceDataRepository :
+class DeviceDataRepository(scope: CoroutineScope) :
     DeviceRepository,
-    DataRepository<List<Device>>() {
+    DataRepository<List<Device>>(scope) {
 
     override val initialState = listOf(
         Device("AA:BB:CC:DD:EE:01", "One Plus 10", "73"),

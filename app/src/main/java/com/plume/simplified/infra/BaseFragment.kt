@@ -25,7 +25,17 @@ abstract class BaseFragment<REQUEST, VIEW_STATE> : Fragment() {
         viewModel.viewState.observe(viewLifecycleOwner) { state ->
             state?.let { onStateUpdated(state) }
         }
+
+        viewModel.onStart(stateConfiguration())
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+
+        viewModel.onStop()
+    }
+
+    abstract fun stateConfiguration(): REQUEST
 
     protected abstract fun onStateUpdated(state: VIEW_STATE)
 

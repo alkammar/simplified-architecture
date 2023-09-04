@@ -26,13 +26,13 @@ class DeviceListFragment : BaseFragment<Unit, DeviceList>() {
     private val deviceList: RecyclerView get() = requireView().findViewById(R.id.device_list_device_list)
     private val deviceAdapter = DeviceAdapter()
 
+    override fun stateConfiguration() = Unit
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         deviceList.layoutManager = LinearLayoutManager(context)
         deviceList.adapter = deviceAdapter
-
-        viewModel.onStart(Unit)
     }
 
     override fun onStateUpdated(state: DeviceList) {

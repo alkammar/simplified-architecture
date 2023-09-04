@@ -8,8 +8,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import javax.inject.Singleton
 
 @Module
@@ -18,13 +16,13 @@ class RepositoryModule {
 
     @Provides
     @Singleton
-    fun providesCoroutineScope() = CoroutineScope(Dispatchers.Main)
+    fun providesCoroutineScope() = Scope()
 
     @Provides
     @Singleton
-    fun providesDeviceRepository(): DeviceRepository = DeviceDataRepository()
+    fun providesDeviceRepository(scope: Scope): DeviceRepository = DeviceDataRepository(scope.mainCoroutineScope)
 
     @Provides
     @Singleton
-    fun providesNodeRepository(): NodeRepository = NodeDataRepository()
+    fun providesNodeRepository(scope: Scope): NodeRepository = NodeDataRepository(scope.mainCoroutineScope)
 }
