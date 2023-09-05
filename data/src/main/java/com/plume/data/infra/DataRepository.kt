@@ -10,10 +10,23 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 abstract class DataRepository<STATE>(scope: CoroutineScope) : Repository<STATE> {
-    abstract val initialState: STATE
-    protected val stateFlow by lazy { MutableStateFlow(initialState) }
+    protected val stateFlow by lazy { MutableStateFlow(emptyState) }
 
-    override fun flow() = stateFlow
+    private var isInitialized = false
+    abstract val emptyState: STATE
+    abstract suspend fun persistedState(): STATE?
+    abstract suspend fun remoteState(): STATE
+
+    override suspend fun flow() = stateFlow.onInitialize()
+
+    private suspend fun MutableStateFlow<STATE>.onInitialize(): MutableStateFlow<STATE> {
+        if (!isInitialized) {
+            emit(persistedState() ?: emptyState)
+            emit(remoteState())
+            isInitialized = true
+        }
+        return this
+    }
 
     init {
         scope.launch {
@@ -30,4 +43,8 @@ abstract class DataRepository<STATE>(scope: CoroutineScope) : Repository<STATE> 
     open fun onInactive() {}
 
     open fun onActive() {}
+
+    override fun clear() {
+        stateFlow.resetReplayCache()
+    }
 }

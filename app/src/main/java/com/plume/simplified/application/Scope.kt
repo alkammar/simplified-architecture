@@ -4,5 +4,5 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 
 class Scope {
-    val mainCoroutineScope = CoroutineScope(Dispatchers.Main)
+    val mainCoroutineScope = CoroutineScope(Dispatchers.IO)
 }

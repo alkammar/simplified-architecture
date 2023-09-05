@@ -3,5 +3,6 @@ package infra
 import kotlinx.coroutines.flow.Flow
 
 interface Repository<STATE> {
-    fun flow(): Flow<STATE>
+    suspend fun flow(): Flow<STATE>
+    fun clear()
 }

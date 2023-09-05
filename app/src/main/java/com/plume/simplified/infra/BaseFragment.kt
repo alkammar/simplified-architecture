@@ -16,17 +16,14 @@ abstract class BaseFragment<REQUEST, VIEW_STATE> : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(layoutId, container, false)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
 
         viewModel.viewState.observe(viewLifecycleOwner) { state ->
             state?.let { onStateUpdated(state) }
         }
 
         viewModel.onStart(stateConfiguration())
+
+        return inflater.inflate(layoutId, container, false)
     }
 
     override fun onDestroyView() {
