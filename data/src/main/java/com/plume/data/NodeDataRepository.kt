@@ -8,6 +8,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.lang.IllegalArgumentException
 
 class NodeDataRepository(
     private val scope: CoroutineScope,
@@ -20,19 +21,23 @@ class NodeDataRepository(
     override suspend fun persistedState() = null
 
     override suspend fun remoteState(): List<Node> {
-        delay(2000)
-        return listOf(
-            Node("73", "The bad room")
-        )
+        delay(1000)
+        if (count++ == 5) {
+            throw IllegalArgumentException()
+        } else {
+            return listOf(
+                Node("73", "The bad room")
+            )
+        }
     }
+
+    var count = 0
 
     override fun onActive() {
         pollingJob = scope.launch {
             while (true) {
-//                with(remote()) {
-//                    stateFlow.emit(this)
-//                    persistence.saveObjectList("nodes", Node::class.java, this)
-//                }
+                delay(2000)
+                emit { remoteState() }
             }
         }
     }

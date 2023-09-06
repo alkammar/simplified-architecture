@@ -13,8 +13,8 @@ import kotlinx.coroutines.launch
 
 abstract class DataRepository<STATE>(scope: CoroutineScope) : Repository<STATE> {
 
-    private val stateFlow by lazy { MutableStateFlow(suspend { persistedState() ?: emptyState }) }
-    private val resolvedFlow by lazy { MutableStateFlow(emptyState) }
+    private val resolvableStateFlow by lazy { MutableStateFlow(suspend { persistedState() ?: emptyState }) }
+    private val resolvedStateFlow by lazy { MutableStateFlow(emptyState) }
 
     private var isStale = true
     abstract val emptyState: STATE
@@ -23,17 +23,17 @@ abstract class DataRepository<STATE>(scope: CoroutineScope) : Repository<STATE> 
 
     init {
         scope.launch {
-            stateFlow
+            resolvableStateFlow
                 .take(1)
                 .onCompletion {
                     println("onCompletion of persistence load")
-                    stateFlow.emit(suspend { remoteState() })
+                    resolvableStateFlow.emit(suspend { remoteState() })
                 }
                 .collect()
         }
 
         scope.launch {
-            stateFlow
+            resolvableStateFlow
                 .subscriptionCount
                 .map { count -> count > 0 }
                 .distinctUntilChanged()
@@ -44,14 +44,18 @@ abstract class DataRepository<STATE>(scope: CoroutineScope) : Repository<STATE> 
         }
     }
 
-    override suspend fun flow() = stateFlow
+    override suspend fun flow() = resolvableStateFlow
         .map { it() }
-        .onEach { resolvedFlow.emit(it) }
+        .onEach { resolvedStateFlow.emit(it) }
 
-    protected fun latest() = resolvedFlow.value
+    protected fun latest() = resolvedStateFlow.value
 
     protected suspend fun emit(state: STATE) {
-        stateFlow.emit(suspend { state })
+        resolvableStateFlow.emit(suspend { state })
+    }
+
+    protected suspend fun emit(resolvableState: suspend () -> STATE) {
+        resolvableStateFlow.emit(resolvableState)
     }
 
     open fun onInactive() {}
@@ -59,7 +63,7 @@ abstract class DataRepository<STATE>(scope: CoroutineScope) : Repository<STATE> 
     open fun onActive() {}
 
     override fun clear() {
-        stateFlow.resetReplayCache()
-        resolvedFlow.resetReplayCache()
+        resolvableStateFlow.resetReplayCache()
+        resolvedStateFlow.resetReplayCache()
     }
 }
