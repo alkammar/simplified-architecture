@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.util.AttributeSet
+import android.util.TypedValue
 import android.widget.TextView
 import androidx.appcompat.widget.SwitchCompat
 import androidx.lifecycle.ViewModelProvider
@@ -21,7 +22,11 @@ class MotionCard @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : BaseCard<Unit, Motion>(context, attrs, defStyleAttr) {
 
-    private val paint = Paint().apply { color = context.getColor(R.color.black) }
+    private val paint = Paint().apply {
+        val typedValue = TypedValue()
+        context.theme.resolveAttribute(androidx.appcompat.R.attr.colorPrimary, typedValue, true)
+        color = typedValue.data
+    }
     private var level = 0f
 
     override val viewModel by lazy {
@@ -35,6 +40,9 @@ class MotionCard @JvmOverloads constructor(
 
     init {
         inflate(context, R.layout.card_motion, this)
+        val typedValue = TypedValue()
+        context.theme.resolveAttribute(R.attr.motion_background_color, typedValue, true)
+        setCardBackgroundColor(typedValue.data)
     }
 
     override fun onAttachedToWindow() {

@@ -28,20 +28,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-<!--    <com.plume.simplified.motion.MotionCard-->
-<!--        android:id="@+id/device_list_motion_2"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_margin="20dp"-->
-<!--        android:layout_height="100dp"-->
-<!--        app:cardBackgroundColor="?attr/colorSecondary"-->
-<!--        app:layout_constraintBottom_toTopOf="@id/device_list_motion_1"/>-->
+    <com.plume.simplified.motion.MotionCard
+        android:id="@+id/device_list_motion_2"
+        android:layout_width="match_parent"
+        android:layout_margin="20dp"
+        android:layout_height="100dp"
+        app:layout_constraintBottom_toTopOf="@id/device_list_motion_1"/>
 
     <com.plume.simplified.motion.MotionCard
         android:id="@+id/device_list_motion_1"
         android:layout_width="match_parent"
         android:layout_margin="20dp"
         android:layout_height="200dp"
-        app:cardBackgroundColor="?attr/colorSecondary"
         app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
