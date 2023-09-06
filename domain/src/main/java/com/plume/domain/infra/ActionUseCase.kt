@@ -1,8 +1,6 @@
 package com.plume.domain.infra
 
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 abstract class ActionUseCase<REQUEST>(
@@ -12,5 +10,5 @@ abstract class ActionUseCase<REQUEST>(
         coroutineScope.launch { onExecute(request) }
     }
 
-    abstract suspend fun onExecute(request: REQUEST)
+    protected abstract suspend fun onExecute(request: REQUEST)
 }

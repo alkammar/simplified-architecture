@@ -4,9 +4,11 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.google.gson.Gson
 import com.plume.data.DeviceDataRepository
+import com.plume.data.MotionDataRepository
 import com.plume.data.NodeDataRepository
 import com.plume.data.persistence.Persistence
 import com.plume.repository.DeviceRepository
+import com.plume.repository.MotionRepository
 import com.plume.repository.NodeRepository
 import dagger.Module
 import dagger.Provides
@@ -46,4 +48,9 @@ class RepositoryModule {
     @Singleton
     fun providesNodeRepository(scope: Scope, persistence: Persistence): NodeRepository =
         NodeDataRepository(scope.mainCoroutineScope, persistence)
+
+    @Provides
+    @Singleton
+    fun providesMotionRepository(scope: Scope, persistence: Persistence): MotionRepository =
+        MotionDataRepository(scope.mainCoroutineScope, persistence)
 }
