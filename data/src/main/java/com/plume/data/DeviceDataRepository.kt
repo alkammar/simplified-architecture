@@ -5,7 +5,6 @@ import com.plume.entity.Device
 import com.plume.repository.DeviceRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
-import java.lang.IllegalArgumentException
 
 class DeviceDataRepository(scope: CoroutineScope) :
     DeviceRepository,
@@ -18,7 +17,6 @@ class DeviceDataRepository(scope: CoroutineScope) :
 
     override suspend fun remoteState(): List<Device> {
         delay(3000)
-//        throw IllegalArgumentException()
         return listOf(
             Device("AA:BB:CC:DD:EE:01", "One Plus 10", "73"),
             Device("AA:BB:CC:DD:EE:02", "iPhone 15", "73"),
@@ -27,6 +25,8 @@ class DeviceDataRepository(scope: CoroutineScope) :
     }
 
     override suspend fun removeDevice(macAddress: String) {
+        println("removeDevice $macAddress")
+        throw IllegalArgumentException()
         val oldDevices = latest()
         val newDevices = oldDevices.filterNot { device -> device.macAddress == macAddress }
         emit(newDevices)

@@ -6,10 +6,12 @@ import kotlinx.coroutines.CoroutineScope
 
 class RemoveDeviceUseCase(
     private val deviceRepository: DeviceRepository,
-    coroutineScope: CoroutineScope
-) : ActionUseCase<String>(coroutineScope) {
+    mainCoroutineScope: CoroutineScope,
+    ioCoroutineScope: CoroutineScope
+) : ActionUseCase<String>(mainCoroutineScope, ioCoroutineScope) {
 
     override suspend fun onExecute(request: String) {
+        println("onExecute $request")
         deviceRepository.removeDevice(request)
     }
 }

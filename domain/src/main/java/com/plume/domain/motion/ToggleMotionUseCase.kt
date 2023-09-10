@@ -6,8 +6,9 @@ import kotlinx.coroutines.CoroutineScope
 
 class ToggleMotionUseCase(
     private val motionRepository: MotionRepository,
-    coroutineScope: CoroutineScope
-) : ActionUseCase<Boolean>(coroutineScope) {
+    mainCoroutineScope: CoroutineScope,
+    ioCoroutineScope: CoroutineScope
+) : ActionUseCase<Boolean>(mainCoroutineScope, ioCoroutineScope) {
 
     override suspend fun onExecute(request: Boolean) {
         motionRepository.enableMotion(request)

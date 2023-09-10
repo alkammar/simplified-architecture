@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 
@@ -19,6 +20,17 @@ abstract class BaseFragment<REQUEST, VIEW_STATE> : Fragment() {
 
         viewModel.viewState.observe(viewLifecycleOwner) { state ->
             state?.let { onStateUpdated(state) }
+        }
+
+        viewModel.errorEvent.observe(viewLifecycleOwner) { event ->
+            event?.let {
+                AlertDialog.Builder(requireContext())
+                    .setTitle("What happened?")
+                    .setMessage("We need to talk")
+                    .setPositiveButton("Ok") { _, _ -> }
+                    .setNegativeButton("Cancel") { _, _ -> }
+                    .show()
+            }
         }
 
         viewModel.onStart(stateConfiguration())

@@ -15,6 +15,9 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
@@ -37,20 +40,31 @@ class RepositoryModule {
 
     @Provides
     @Singleton
-    fun providesCoroutineScope() = Scope()
+    @Named("main")
+    fun providesMainCoroutineScope() = CoroutineScope(Dispatchers.Main)
 
     @Provides
     @Singleton
-    fun providesDeviceRepository(scope: Scope): DeviceRepository =
-        DeviceDataRepository(scope.mainCoroutineScope)
+    @Named("io")
+    fun providesIoCoroutineScope() = CoroutineScope(Dispatchers.IO)
 
     @Provides
     @Singleton
-    fun providesNodeRepository(scope: Scope, persistence: Persistence): NodeRepository =
-        NodeDataRepository(scope.mainCoroutineScope, persistence)
+    fun providesDeviceRepository(
+        @Named("io") ioCoroutineScope: CoroutineScope
+    ): DeviceRepository = DeviceDataRepository(ioCoroutineScope)
 
     @Provides
     @Singleton
-    fun providesMotionRepository(scope: Scope, persistence: Persistence): MotionRepository =
-        MotionDataRepository(scope.mainCoroutineScope, persistence)
+    fun providesNodeRepository(
+        @Named("io") ioCoroutineScope: CoroutineScope,
+        persistence: Persistence
+    ): NodeRepository = NodeDataRepository(ioCoroutineScope, persistence)
+
+    @Provides
+    @Singleton
+    fun providesMotionRepository(
+        @Named("io") ioCoroutineScope: CoroutineScope,
+        persistence: Persistence
+    ): MotionRepository = MotionDataRepository(ioCoroutineScope, persistence)
 }

@@ -4,10 +4,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.plume.domain.infra.StateUseCase
 import kotlinx.coroutines.Job
-import java.lang.IllegalArgumentException
 
 abstract class BaseViewModel<REQUEST, VIEW_STATE> : ViewModel() {
     internal val viewState = MutableLiveData<VIEW_STATE>().apply { value = initialState }
+    internal val errorEvent = MutableLiveData<Event<Throwable>>().apply { value = null }
     abstract val stateUseCase: StateUseCase<REQUEST, VIEW_STATE>
     abstract val initialState: VIEW_STATE
 
@@ -22,6 +22,10 @@ abstract class BaseViewModel<REQUEST, VIEW_STATE> : ViewModel() {
             println("We caught a state error $throwable")
             restart(request)
         }
+    }
+
+    protected fun notifyError(throwable: Throwable) {
+        errorEvent.value = Event(throwable)
     }
 
     fun onStop() {

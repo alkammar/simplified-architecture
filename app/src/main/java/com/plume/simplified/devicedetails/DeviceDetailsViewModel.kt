@@ -16,6 +16,7 @@ class DeviceDetailsViewModel @Inject constructor(
     override val stateUseCase = getDeviceDetailsUseCase
 
     fun onRemoveDeviceAction(macAddress: String) {
-        removeDeviceUseCase.execute(macAddress)
+        println("onRemoveDeviceAction $macAddress")
+        removeDeviceUseCase.execute(macAddress, ::notifyError)
     }
 }
