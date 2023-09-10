@@ -2,6 +2,7 @@ package com.plume.simplified.infra
 
 import android.content.Context
 import android.util.AttributeSet
+import androidx.appcompat.app.AlertDialog
 import androidx.cardview.widget.CardView
 import androidx.lifecycle.findViewTreeLifecycleOwner
 
@@ -18,8 +19,17 @@ abstract class BaseCard<REQUEST, VIEW_STATE>(
 
         viewModel.onStart(stateConfiguration())
         viewModel.viewState.observe(findViewTreeLifecycleOwner()!!) { state ->
-            if (state != null) {
-                onStateUpdated(state)
+            state?.let { onStateUpdated(it) }
+        }
+
+        viewModel.errorEvent.observe(findViewTreeLifecycleOwner()!!) { event ->
+            event?.let {
+                AlertDialog.Builder(context)
+                    .setTitle("What happened?")
+                    .setMessage("We need to talk")
+                    .setPositiveButton("Ok") { _, _ -> }
+                    .setNegativeButton("Cancel") { _, _ -> }
+                    .show()
             }
         }
     }

@@ -19,13 +19,19 @@ class DeviceDetailsModule {
     fun providesGetDeviceDetailsUseCase(
         deviceRepository: DeviceRepository,
         nodeRepository: NodeRepository,
+        @Named("main") mainCoroutineScope: CoroutineScope,
         @Named("io") ioCoroutineScope: CoroutineScope
-    ) = GetDeviceDetailsUseCase(deviceRepository, nodeRepository, ioCoroutineScope)
+    ) = GetDeviceDetailsUseCase(
+        deviceRepository,
+        nodeRepository,
+        mainCoroutineScope,
+        ioCoroutineScope
+    )
 
     @Provides
     fun providesRemoveDeviceUseCase(
         deviceRepository: DeviceRepository,
-        @Named("io") mainCoroutineScope: CoroutineScope,
-        @Named("main") ioCoroutineScope: CoroutineScope
+        @Named("main") mainCoroutineScope: CoroutineScope,
+        @Named("io") ioCoroutineScope: CoroutineScope
     ) = RemoveDeviceUseCase(deviceRepository, mainCoroutineScope, ioCoroutineScope)
 }

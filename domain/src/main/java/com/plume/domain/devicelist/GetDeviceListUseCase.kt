@@ -7,8 +7,9 @@ import kotlinx.coroutines.flow.map
 
 class GetDeviceListUseCase(
     private val deviceRepository: DeviceRepository,
-    coroutineScope: CoroutineScope
-) : StateUseCase<Unit, DeviceList>(coroutineScope) {
+    mainCoroutineScope: CoroutineScope,
+    ioCoroutineScope: CoroutineScope
+) : StateUseCase<Unit, DeviceList>(mainCoroutineScope, ioCoroutineScope) {
 
     override suspend fun onExecute(request: Unit) =
         deviceRepository.flow()

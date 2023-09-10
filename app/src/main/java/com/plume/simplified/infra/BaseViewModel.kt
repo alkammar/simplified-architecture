@@ -20,7 +20,8 @@ abstract class BaseViewModel<REQUEST, VIEW_STATE> : ViewModel() {
     open fun onStateError(throwable: Throwable, request: REQUEST) {
         if (throwable is IllegalArgumentException) {
             println("We caught a state error $throwable")
-            restart(request)
+            notifyError(throwable)
+//            restart(request)
         }
     }
 

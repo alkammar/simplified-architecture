@@ -8,11 +8,11 @@ abstract class ActionUseCase<REQUEST>(
     private var ioCoroutineScope: CoroutineScope
 ) {
     fun execute(request: REQUEST, onError: (Throwable) -> Unit = {}) {
-        mainCoroutineScope.launch {
+        ioCoroutineScope.launch {
            try {
                onExecute(request)
            } catch (e: Exception) {
-               ioCoroutineScope.launch {
+               mainCoroutineScope.launch {
                    onError(e)
                }
            }

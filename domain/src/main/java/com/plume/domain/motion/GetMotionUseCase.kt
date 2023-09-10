@@ -7,8 +7,9 @@ import kotlinx.coroutines.CoroutineScope
 
 class GetMotionUseCase(
     private val motionRepository: MotionRepository,
-    coroutineScope: CoroutineScope
-) : StateUseCase<Unit, Motion>(coroutineScope) {
+    mainCoroutineScope: CoroutineScope,
+    ioCoroutineScope: CoroutineScope
+) : StateUseCase<Unit, Motion>(mainCoroutineScope, ioCoroutineScope) {
 
     override suspend fun onExecute(request: Unit) =
         motionRepository.flow()

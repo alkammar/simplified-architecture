@@ -17,13 +17,14 @@ class MotionModule {
     @Provides
     fun providesGetMotionUseCase(
         motionRepository: MotionRepository,
+        @Named("main") mainCoroutineScope: CoroutineScope,
         @Named("io") ioCoroutineScope: CoroutineScope
-    ) = GetMotionUseCase(motionRepository, ioCoroutineScope)
+    ) = GetMotionUseCase(motionRepository, mainCoroutineScope, ioCoroutineScope)
 
     @Provides
     fun providesToggleMotionUseCase(
         motionRepository: MotionRepository,
-        @Named("io") mainCoroutineScope: CoroutineScope,
-        @Named("main") ioCoroutineScope: CoroutineScope
+        @Named("main") mainCoroutineScope: CoroutineScope,
+        @Named("io") ioCoroutineScope: CoroutineScope
     ) = ToggleMotionUseCase(motionRepository, mainCoroutineScope, ioCoroutineScope)
 }

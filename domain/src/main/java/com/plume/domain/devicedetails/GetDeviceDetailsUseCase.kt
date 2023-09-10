@@ -9,8 +9,9 @@ import kotlinx.coroutines.flow.combine
 class GetDeviceDetailsUseCase(
     private val deviceRepository: DeviceRepository,
     private val nodeRepository: NodeRepository,
-    coroutineScope: CoroutineScope
-) : StateUseCase<String, DeviceDetails>(coroutineScope) {
+    mainCoroutineScope: CoroutineScope,
+    ioCoroutineScope: CoroutineScope
+) : StateUseCase<String, DeviceDetails>(mainCoroutineScope, ioCoroutineScope) {
 
     override suspend fun onExecute(request: String) = combine(
         deviceRepository.flow(),

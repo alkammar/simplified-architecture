@@ -16,6 +16,7 @@ class DeviceListModule {
     @Provides
     fun providesGetDeviceListUseCase(
         deviceRepository: DeviceRepository,
+        @Named("main") mainCoroutineScope: CoroutineScope,
         @Named("io") ioCoroutineScope: CoroutineScope
-    ) = GetDeviceListUseCase(deviceRepository, ioCoroutineScope)
+    ) = GetDeviceListUseCase(deviceRepository, mainCoroutineScope, ioCoroutineScope)
 }

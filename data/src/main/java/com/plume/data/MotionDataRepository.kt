@@ -44,7 +44,11 @@ class MotionDataRepository(
     override fun onActive() {
         pollingJob = scope.launch {
             while (true) {
-                emit { remoteState() }
+                emit {
+                    delay(2000)
+                    throw IllegalArgumentException()
+                }
+//                emit { remoteState() }
             }
         }
     }
