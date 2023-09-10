@@ -7,6 +7,7 @@ import com.plume.data.DeviceDataRepository
 import com.plume.data.MotionDataRepository
 import com.plume.data.NodeDataRepository
 import com.plume.data.persistence.Persistence
+import com.plume.domain.infra.UseCaseExecutor
 import com.plume.repository.DeviceRepository
 import com.plume.repository.MotionRepository
 import com.plume.repository.NodeRepository
@@ -23,6 +24,13 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 class RepositoryModule {
+
+    @Provides
+    @Singleton
+    fun providesUseCaseExecutor(
+        @Named("main") mainCoroutineScope: CoroutineScope,
+        @Named("io") ioCoroutineScope: CoroutineScope
+    ) = UseCaseExecutor(mainCoroutineScope, ioCoroutineScope)
 
     @Provides
     @Singleton
