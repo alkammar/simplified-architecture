@@ -10,15 +10,15 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MotionCardViewModel @Inject constructor(
+    useCaseExecutor: UseCaseExecutor,
     getMotionUseCase: GetMotionUseCase,
-    private val toggleMotionUseCase: ToggleMotionUseCase,
-    private val useCaseExecutor: UseCaseExecutor
+    private val toggleMotionUseCase: ToggleMotionUseCase
 ) : BaseViewModel<Unit, Motion>(useCaseExecutor) {
 
     override val initialState = Motion.NotDetected
     override val stateUseCase = getMotionUseCase
 
     fun onToggleMotionAction(checked: Boolean) {
-        useCaseExecutor.execute(toggleMotionUseCase, checked, ::notifyError)
+        toggleMotionUseCase.execute(checked)
     }
 }

@@ -10,14 +10,14 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DeviceDetailsViewModel @Inject constructor(
+    useCaseExecutor: UseCaseExecutor,
     getDeviceDetailsUseCase: GetDeviceDetailsUseCase,
-    private val removeDeviceUseCase: RemoveDeviceUseCase,
-    private val useCaseExecutor: UseCaseExecutor
+    private val removeDeviceUseCase: RemoveDeviceUseCase
 ) : BaseViewModel<String, DeviceDetails>(useCaseExecutor) {
     override val initialState = DeviceDetails.Unknown
     override val stateUseCase = getDeviceDetailsUseCase
 
     fun onRemoveDeviceAction(macAddress: String) {
-        useCaseExecutor.execute(removeDeviceUseCase, macAddress, ::notifyError)
+        removeDeviceUseCase.execute(macAddress)
     }
 }

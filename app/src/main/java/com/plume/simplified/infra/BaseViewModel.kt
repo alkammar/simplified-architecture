@@ -2,6 +2,7 @@ package com.plume.simplified.infra
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.plume.domain.infra.ActionUseCase
 import com.plume.domain.infra.StateUseCase
 import com.plume.domain.infra.UseCaseExecutor
 import kotlinx.coroutines.Job
@@ -10,7 +11,7 @@ abstract class BaseViewModel<REQUEST, VIEW_STATE>(
     private val useCaseExecutor: UseCaseExecutor
 ) : ViewModel() {
     internal val viewState = MutableLiveData<VIEW_STATE>().apply { value = initialState }
-    internal val errorEvent = MutableLiveData<Event<Throwable>>().apply { value = null }
+    internal val errorEvent = SingleLiveEvent<Throwable>()
     abstract val stateUseCase: StateUseCase<REQUEST, VIEW_STATE>
     abstract val initialState: VIEW_STATE
 
@@ -21,15 +22,11 @@ abstract class BaseViewModel<REQUEST, VIEW_STATE>(
     }
 
     open fun onStateError(throwable: Throwable, request: REQUEST) {
-        if (throwable is IllegalArgumentException) {
-            println("We caught a state error $throwable")
-            notifyError(throwable)
-//            restart(request)
-        }
+        errorEvent.value = throwable
     }
 
-    protected fun notifyError(throwable: Throwable) {
-        errorEvent.value = Event(throwable)
+    open fun onActionError(throwable: Throwable) {
+        errorEvent.value = throwable
     }
 
     fun onStop() {
@@ -39,9 +36,20 @@ abstract class BaseViewModel<REQUEST, VIEW_STATE>(
     private fun restart(request: REQUEST) {
         job?.cancel()
         useCaseExecutor.execute(
-            stateUseCase,
-            request,
-            onState = { state -> viewState.value = state }
-        ) { throwable -> onStateError(throwable, request) }
+            stateUseCase = stateUseCase,
+            request = request,
+            onState = { state -> viewState.value = state },
+            onError = { throwable -> onStateError(throwable, request) }
+        )
+    }
+
+    fun <REQ> ActionUseCase<REQ>.execute(
+        request: REQ
+    ) {
+        useCaseExecutor.execute(
+            actionUseCase = this,
+            request = request,
+            onError = ::onActionError
+        )
     }
 }

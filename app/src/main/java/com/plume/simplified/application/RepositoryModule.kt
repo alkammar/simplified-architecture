@@ -11,6 +11,7 @@ import com.plume.domain.infra.UseCaseExecutor
 import com.plume.repository.DeviceRepository
 import com.plume.repository.MotionRepository
 import com.plume.repository.NodeRepository
+import com.plume.simplified.infra.DefaultErrorBehavior
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -26,7 +27,9 @@ import javax.inject.Singleton
 class RepositoryModule {
 
     @Provides
-    @Singleton
+    fun providesDefaultErrorBehavior() = DefaultErrorBehavior()
+
+    @Provides
     fun providesUseCaseExecutor(
         @Named("main") mainCoroutineScope: CoroutineScope,
         @Named("io") ioCoroutineScope: CoroutineScope

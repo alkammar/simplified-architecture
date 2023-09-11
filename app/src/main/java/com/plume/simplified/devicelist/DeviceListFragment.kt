@@ -1,5 +1,6 @@
 package com.plume.simplified.devicelist
 
+import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
@@ -51,5 +52,9 @@ class DeviceListFragment : BaseFragment<Unit, DeviceList>() {
                 deviceAdapter.data = state.devices
             }
         }
+    }
+
+    override fun onError(context: Context, throwable: Throwable) {
+
     }
 }

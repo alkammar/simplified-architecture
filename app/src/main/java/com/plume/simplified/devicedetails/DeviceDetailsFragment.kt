@@ -1,9 +1,11 @@
 package com.plume.simplified.devicedetails
 
+import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
@@ -12,6 +14,7 @@ import com.plume.domain.devicedetails.DeviceDetails.Connected
 import com.plume.domain.devicedetails.DeviceDetails.NoDevice
 import com.plume.domain.devicedetails.DeviceDetails.NotConnected
 import com.plume.domain.devicedetails.DeviceDetails.Unknown
+import com.plume.entity.exception.DeviceAlreadyRemoved
 import com.plume.simplified.R
 import com.plume.simplified.infra.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
@@ -66,6 +69,19 @@ class DeviceDetailsFragment : BaseFragment<String, DeviceDetails>() {
                 deviceNodeConnection.isVisible = true
                 requireSupportActivity().supportActionBar?.title = state.device.name
             }
+        }
+    }
+
+    override fun onError(context: Context, throwable: Throwable) {
+        when (throwable) {
+            is DeviceAlreadyRemoved -> {
+                AlertDialog.Builder(context)
+                    .setTitle("Device already removed!")
+                    .setMessage("You are trying to remove a device that either does not exist or already removed")
+                    .setPositiveButton("Ok") { _, _ -> }
+                    .show()
+            }
+            else -> super.onError(context, throwable)
         }
     }
 }

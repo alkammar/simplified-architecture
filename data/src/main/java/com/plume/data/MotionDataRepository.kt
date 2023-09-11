@@ -18,14 +18,16 @@ class MotionDataRepository(
 
     private var pollingJob: Job? = null
 
-    override val emptyState = Motion.NotDetected
+    override val emptyState = Motion.Disabled
     override suspend fun persistedState() = null
 
     private var phase = 0
     private var remoteState: Motion = Motion.Disabled
 
     override suspend fun enableMotion(enable: Boolean) {
+        delay(2000)
         remoteState = if (enable) {
+//            throw MotionNotSupported
             Motion.NotDetected
         } else {
             Motion.Disabled
@@ -44,11 +46,11 @@ class MotionDataRepository(
     override fun onActive() {
         pollingJob = scope.launch {
             while (true) {
-                emit {
-                    delay(2000)
-                    throw IllegalArgumentException()
-                }
-//                emit { remoteState() }
+//                emit {
+//                    delay(2000)
+//                    throw IllegalArgumentException()
+//                }
+                emit { remoteState() }
             }
         }
     }

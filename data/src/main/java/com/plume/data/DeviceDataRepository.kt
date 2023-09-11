@@ -2,6 +2,7 @@ package com.plume.data
 
 import com.plume.data.infra.DataRepository
 import com.plume.entity.Device
+import com.plume.entity.exception.DeviceAlreadyRemoved
 import com.plume.repository.DeviceRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
@@ -25,8 +26,9 @@ class DeviceDataRepository(scope: CoroutineScope) :
     }
 
     override suspend fun removeDevice(macAddress: String) {
-        println("removeDevice $macAddress")
-        throw IllegalArgumentException()
+        if (macAddress == "AA:BB:CC:DD:EE:03") {
+            throw DeviceAlreadyRemoved
+        }
         val oldDevices = latest()
         val newDevices = oldDevices.filterNot { device -> device.macAddress == macAddress }
         emit(newDevices)

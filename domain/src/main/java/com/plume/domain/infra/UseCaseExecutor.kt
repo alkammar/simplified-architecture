@@ -31,7 +31,7 @@ class UseCaseExecutor(
         ioCoroutineScope.launch {
             try {
                 actionUseCase.onExecute(request)
-            } catch (e: Exception) {
+            } catch (e: Throwable) {
                 mainCoroutineScope.launch { onError(e) }
             }
         }

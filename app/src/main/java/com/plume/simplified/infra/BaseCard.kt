@@ -2,9 +2,9 @@ package com.plume.simplified.infra
 
 import android.content.Context
 import android.util.AttributeSet
-import androidx.appcompat.app.AlertDialog
 import androidx.cardview.widget.CardView
 import androidx.lifecycle.findViewTreeLifecycleOwner
+import javax.inject.Inject
 
 abstract class BaseCard<REQUEST, VIEW_STATE>(
     context: Context,
@@ -14,6 +14,9 @@ abstract class BaseCard<REQUEST, VIEW_STATE>(
 
     abstract val viewModel: BaseViewModel<REQUEST, VIEW_STATE>
 
+    @Inject
+    lateinit var defaultErrorBehaviour: DefaultErrorBehavior
+
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
 
@@ -22,19 +25,18 @@ abstract class BaseCard<REQUEST, VIEW_STATE>(
             state?.let { onStateUpdated(it) }
         }
 
-        viewModel.errorEvent.observe(findViewTreeLifecycleOwner()!!) { event ->
-            event?.let {
-                AlertDialog.Builder(context)
-                    .setTitle("What happened?")
-                    .setMessage("We need to talk")
-                    .setPositiveButton("Ok") { _, _ -> }
-                    .setNegativeButton("Cancel") { _, _ -> }
-                    .show()
-            }
-        }
+        viewModel.observeError(
+            context = context,
+            lifecycleOwner = findViewTreeLifecycleOwner()!!,
+            onError = { context, throwable -> onError(context, throwable) }
+        )
     }
 
     abstract fun stateConfiguration(): REQUEST
 
     protected abstract fun onStateUpdated(state: VIEW_STATE)
+
+    protected open fun onError(context: Context, throwable: Throwable) {
+        defaultErrorBehaviour(context, throwable)
+    }
 }
