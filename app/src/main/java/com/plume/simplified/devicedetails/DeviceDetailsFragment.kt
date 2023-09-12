@@ -14,7 +14,7 @@ import com.plume.domain.devicedetails.DeviceDetails.Connected
 import com.plume.domain.devicedetails.DeviceDetails.NoDevice
 import com.plume.domain.devicedetails.DeviceDetails.NotConnected
 import com.plume.domain.devicedetails.DeviceDetails.Unknown
-import com.plume.entity.exception.DeviceAlreadyRemoved
+import com.plume.entity.exception.RemoveMainDeviceException
 import com.plume.simplified.R
 import com.plume.simplified.infra.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
@@ -74,10 +74,10 @@ class DeviceDetailsFragment : BaseFragment<String, DeviceDetails>() {
 
     override fun onError(context: Context, throwable: Throwable) {
         when (throwable) {
-            is DeviceAlreadyRemoved -> {
+            is RemoveMainDeviceException -> {
                 AlertDialog.Builder(context)
-                    .setTitle("Device already removed!")
-                    .setMessage("You are trying to remove a device that either does not exist or already removed")
+                    .setTitle("Removing main device!")
+                    .setMessage("You cannot remove the main device")
                     .setPositiveButton("Ok") { _, _ -> }
                     .show()
             }

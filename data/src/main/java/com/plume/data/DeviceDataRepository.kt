@@ -1,13 +1,16 @@
 package com.plume.data
 
+import com.plume.data.device.DeviceItem
+import com.plume.data.device.DeviceService
+import com.plume.data.device.DevicesResponse
+import com.plume.data.device.RemoveDeviceResponse
 import com.plume.data.infra.DataRepository
 import com.plume.entity.Device
-import com.plume.entity.exception.DeviceAlreadyRemoved
 import com.plume.repository.DeviceRepository
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.delay
+import java.lang.IllegalArgumentException
 
-class DeviceDataRepository(scope: CoroutineScope) :
+class DeviceDataRepository(private val deviceService: DeviceService, scope: CoroutineScope) :
     DeviceRepository,
     DataRepository<List<Device>>(scope) {
 
@@ -16,21 +19,20 @@ class DeviceDataRepository(scope: CoroutineScope) :
         Device("AA:BB:CC:DD:EE:01", "One Plus 10", "73")
     )
 
-    override suspend fun remoteState(): List<Device> {
-        delay(3000)
-        return listOf(
-            Device("AA:BB:CC:DD:EE:01", "One Plus 10", "73"),
-            Device("AA:BB:CC:DD:EE:02", "iPhone 15", "73"),
-            Device("AA:BB:CC:DD:EE:03", "Macbook", "73")
+    override suspend fun remoteState() =
+        when (val response = deviceService.devices()) {
+            DevicesResponse.DevicesError -> throw IllegalArgumentException()
+            is DevicesResponse.DevicesSuccess -> response.devices.map { it.toData() }
+        }
+
+    override suspend fun removeDevice(macAddress: String) {
+        emit(
+            when (val response = deviceService.remove(macAddress)) {
+                RemoveDeviceResponse.RemoveMainDeviceError -> throw IllegalArgumentException()
+                is RemoveDeviceResponse.RemoveDeviceSuccess -> response.devices.map { it.toData() }
+            }
         )
     }
 
-    override suspend fun removeDevice(macAddress: String) {
-        if (macAddress == "AA:BB:CC:DD:EE:03") {
-            throw DeviceAlreadyRemoved
-        }
-        val oldDevices = latest()
-        val newDevices = oldDevices.filterNot { device -> device.macAddress == macAddress }
-        emit(newDevices)
-    }
+    private fun DeviceItem.toData(): Device = Device(macAddress, name, nodeId)
 }
